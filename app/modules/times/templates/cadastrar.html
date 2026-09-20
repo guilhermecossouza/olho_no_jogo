@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% set erros = form.erros_agrupados() %}
+{% if erros %}
+<div class="container mt-5">
+    <div class="alert alert-danger-custom" role="alert">
+        <div class="alert-header">
+            <span class="alert-icon">⚠️</span>
+            <strong>Foram encontrados os seguintes erros:</strong>
+        </div>
+        <ul class="alert-list mb-0">
+            {% for erro in erros %}
+                <li>{{ erro }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+
+<form action="{{ url_for('times.cadastrar_page') }}" method="post" novalidate>
+    {{ form.hidden_tag() }}
+
+    <div class="container mt-5">
+
+        {# ===== LINHA COM NOME + CÓDIGO ===== #}
+        <div class="d-flex gap-2">
+
+            {# Campo NOME #}
+            <div class="w-50">
+                {{ form.nome(class="form-control" + (" is-invalid" if form.nome.errors else ""),
+                             placeholder="Nome do time") }}
+            </div>
+
+            {# Campo CÓDIGO #}
+            <div class="w-25">
+                {{ form.codigo_sofascore(class="form-control" + (" is-invalid" if form.codigo_sofascore.errors else ""),
+                                         placeholder="Código") }}
+            </div>
+
+        </div>
+
+        {# ===== TEXTAREA JSON ===== #}
+        <div class="mt-3">
+            {{ form.times_json.label(class="form-label") }}
+            {{ form.times_json(class="form-control" + (" is-invalid" if form.times_json.errors else ""),
+                               rows="6",
+                               placeholder="Cole aqui o JSON") }}
+        </div>
+
+        {# ===== BOTÕES ===== #}
+        <div class="d-flex justify-content-center gap-2 mt-3">
+            {{ form.submit(class="btn btn-outline-success") }}
+            <a href="#" class="btn btn-outline-primary">Voltar</a>
+        </div>
+
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

@@ -1,0 +1,35 @@
+.alert-danger-custom {
+    background-color: #fff5f5;
+    border-left: 4px solid #dc3545;
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    color: #721c24;
+}
+
+.alert-danger-custom .alert-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.alert-danger-custom .alert-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.alert-danger-custom .alert-list {
+    margin-left: 1.5rem;
+    padding-left: 0;
+    list-style: disc;
+}
+
+.alert-danger-custom .alert-list li {
+    margin-bottom: 0.25rem;
+}
+
+.alert-danger-custom .alert-list li:last-child {
+    margin-bottom: 0;
+}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-3">
+        <div class="d-flex justify-content-center">
+            <div class="input-group w-60">
+                <input type="text" class="form-control" placeholder="Nome do time" aria-label="Nome do time">
+                <button class="btn btn-outline-success" type="button">Buscar</button>
+                <button class="btn btn-outline-primary" id="btn-cadastrar" type="button">Cadastrar</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('#btn-cadastrar').on('click', function() {
+            window.location.href = '{{ url_for("times.cadastrar_page") }}';
+        });
+    });
+</script>
+
+{% endblock %}

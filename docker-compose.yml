@@ -1,0 +1,53 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: olho_no_jogo_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - olho_no_jogo_net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: olho_no_jogo_app
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      FLASK_APP: run.py              # ✅ corrigido
+      FLASK_ENV: development
+      FLASK_DEBUG: 1
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - olho_no_jogo_net
+    command: >
+      sh -c "flask run --host=0.0.0.0 --port=5000"
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  olho_no_jogo_net:
+    driver: bridge
