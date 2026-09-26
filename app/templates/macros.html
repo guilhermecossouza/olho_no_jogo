@@ -1,0 +1,50 @@
+{# ============================================================
+   MACROS REUTILIZÁVEIS
+   ============================================================ #}
+
+
+{# ------------------------------------------------------------
+   RENDER_FLASH — exibe mensagens flash do Flask
+   Uso: {{ render_flash() }}
+   ------------------------------------------------------------ #}
+{% macro render_flash() %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mt-3">
+                {% for categoria, msg in messages %}
+                    <div class="alert alert-{{ categoria }} alert-dismissible fade show" role="alert">
+                        {{ msg }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+{% endmacro %}
+
+
+{# ------------------------------------------------------------
+   RENDER_FIELD — renderiza um campo de formulário WTForms
+   Uso: {{ render_field(form.nome, placeholder="Nome do time") }}
+   ------------------------------------------------------------ #}
+{% macro render_field(field, placeholder="", col="") %}
+    <div class="{{ col }}">
+        {{ field.label(class="form-label") }}
+        {{ field(
+            class="form-control" + (" is-invalid" if field.errors else ""),
+            placeholder=placeholder
+        ) }}
+        {% for erro in field.errors %}
+            <div class="invalid-feedback">{{ erro }}</div>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+
+{# ------------------------------------------------------------
+   RENDER_BOTAO_VOLTAR — botão de voltar padronizado
+   Uso: {{ render_botao_voltar(url_for('times.busca_page')) }}
+   ------------------------------------------------------------ #}
+{% macro render_botao_voltar(url) %}
+    <a href="{{ url }}" class="btn btn-outline-primary">Voltar</a>
+{% endmacro %}

@@ -7,13 +7,15 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
     ports:
-      - "${DB_PORT}:3306"
+      # Porta 3307 no host → 3306 no container (evita conflito com MySQL local)
+      - "${DB_HOST_PORT}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
       - olho_no_jogo_net
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_PASSWORD}"]
+      # Usa MYSQL_PWD para não vazar senha nos logs
+      test: ["CMD-SHELL", "MYSQL_PWD=$$MYSQL_ROOT_PASSWORD mysqladmin ping -h localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -29,7 +31,8 @@ services:
       - .env
     environment:
       DB_HOST: db
-      FLASK_APP: run.py              # ✅ corrigido
+      DB_PORT: 3306          # ⚠️ Porta INTERNA do container (não a do host!)
+      FLASK_APP: run.py
       FLASK_ENV: development
       FLASK_DEBUG: 1
     ports:

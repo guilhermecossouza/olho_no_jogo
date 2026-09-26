@@ -3,11 +3,58 @@
 {% block content %}
     <div class="container mt-3">
         <div class="d-flex justify-content-center">
-            <div class="input-group w-60">
-                <input type="text" class="form-control" placeholder="Nome do time" aria-label="Nome do time">
-                <button class="btn btn-outline-success" type="button">Buscar</button>
-                <button class="btn btn-outline-primary" id="btn-cadastrar" type="button">Cadastrar</button>
-            </div>
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">id</th>
+                        <th scope="col" class="text-center">Nome</th>
+                        <th scope="col" class="text-center">Id SofaScore</th>
+                        <th scope="col" class="text-center">Editar <i class="bi bi-pencil-square text-success"></i></th>
+                        <th scope="col" class="text-center">Excluir <i class="bi bi-trash text-danger"></i></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for time in times %}
+                        <tr>
+                            <th class="text-center" scope="row">{{ time.idTime }}</th>
+                            <td class="text-center">{{ time.name }}</td>
+                            <td class="text-center">{{ time.idSofascore }}</td>
+                            <td class="text-center">
+                                <i
+                                    class="bi bi-pencil-square text-success click-icons icons-editar"
+                                    data-time-id="{{ time.idTime }}"
+                                    style="cursor: pointer;"
+                                    title="Editar">
+                                </i>
+                            </td>
+                            <td class="text-center">
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('times.deletar_page', id=time.idTime) }}"
+                                    class="form-deletar"
+                                    style="display: inline;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <i
+                                        class="bi bi-trash text-danger click-icons icons-excluir"
+                                        style="cursor: pointer;"
+                                        title="Excluir">
+                                    </i>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-3">
+                                Nenhum time cadastrado.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-center gap-2 mb-5">
+            <button type="button" class="btn btn-outline-success" id="btn-cadastrar">Cadastrar Time</button>
+            <button type="button" class="btn btn-outline-success" id="btn-time-json">Cadastrar Time JSON</button>
         </div>
     </div>
 {% endblock %}
@@ -15,10 +62,31 @@
 {% block scripts %}
 <script>
     $(document).ready(function() {
+
+        // ===== BOTÃO CADASTRAR =====
         $('#btn-cadastrar').on('click', function() {
             window.location.href = '{{ url_for("times.cadastrar_page") }}';
         });
+
+        // ===== BOTÃO CADASTRAR JSON =====
+        $("#btn-time-json").click(function() {
+            window.location.href = '{{ url_for("times.cadastra_time_json") }}';
+        });
+
+        // ===== ÍCONE EDITAR =====
+        $(".icons-editar").click(function() {
+            var timeId = $(this).data("time-id");
+            window.location.href = "{{ url_for('times.cadastrar_page') }}" + "/" + timeId;
+        });
+
+        // ===== ÍCONE EXCLUIR (submit do form com confirmação) =====
+        $(".icons-excluir").click(function() {
+            var form = $(this).closest("form");
+            if (confirm("Tem certeza que deseja excluir este time?")) {
+                form.submit();
+            }
+        });
+
     });
 </script>
-
 {% endblock %}
